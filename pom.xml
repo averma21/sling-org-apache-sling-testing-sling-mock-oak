@@ -35,9 +35,9 @@
     <description>Implements a resource resolver type for Jackrabbit Oak that can be used in unit tests based on Sling Mocks.</description>
   
     <properties>
-        <oak.version>1.8.9</oak.version>
-        <jackrabbit.version>2.16.3</jackrabbit.version>
-        <sling-mock.version>2.3.2</sling-mock.version>
+        <oak.version>1.10.2</oak.version>
+        <jackrabbit.version>2.18.0</jackrabbit.version>
+        <sling-mock.version>2.3.6</sling-mock.version>
     </properties>
 
     <scm>
