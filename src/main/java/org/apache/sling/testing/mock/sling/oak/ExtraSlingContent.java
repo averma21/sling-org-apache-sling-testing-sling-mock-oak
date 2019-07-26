@@ -18,6 +18,7 @@
  */
 package org.apache.sling.testing.mock.sling.oak;
 
+import static com.google.common.collect.ImmutableSet.of;
 import static java.util.Collections.singleton;
 import static org.apache.jackrabbit.JcrConstants.JCR_SYSTEM;
 import static org.apache.jackrabbit.oak.plugins.index.IndexConstants.INDEX_DEFINITIONS_NAME;
@@ -25,6 +26,8 @@ import static org.apache.jackrabbit.oak.plugins.index.IndexUtils.createIndexDefi
 import static org.apache.jackrabbit.oak.spi.namespace.NamespaceConstants.REP_NAMESPACES;
 import static org.apache.sling.jcr.resource.JcrResourceConstants.SLING_NAMESPACE_URI;
 
+import org.apache.jackrabbit.oak.plugins.index.lucene.util.IndexDefinitionBuilder;
+import org.apache.jackrabbit.oak.plugins.index.lucene.util.LuceneIndexHelper;
 import org.apache.jackrabbit.oak.plugins.name.Namespaces;
 import org.apache.jackrabbit.oak.spi.lifecycle.RepositoryInitializer;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -63,6 +66,19 @@ final class ExtraSlingContent implements RepositoryInitializer {
             property(index, "slingResource", slingNs + ":resource");
             property(index, "slingResourceType", slingNs + ":resourceType");
             property(index, "slingVanityPath", slingNs + ":vanityPath");
+
+            // lucene full-text index
+            if (!index.hasChildNode("lucene")) {
+                LuceneIndexHelper.newLuceneIndexDefinition(
+                        index, "lucene", LuceneIndexHelper.JR_PROPERTY_INCLUDES,
+                        of(
+                                "jcr:createdBy",
+                                "jcr:lastModifiedBy",
+                                "sling:alias",
+                                "sling:resourceType",
+                                "sling:vanityPath"),
+                        "async");
+            }
         }
     }
 

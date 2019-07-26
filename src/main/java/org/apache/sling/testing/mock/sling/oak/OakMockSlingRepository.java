@@ -36,6 +36,10 @@ import javax.jcr.Value;
 import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;
+import org.apache.jackrabbit.oak.plugins.index.lucene.LuceneIndexEditorProvider;
+import org.apache.jackrabbit.oak.plugins.index.lucene.LuceneIndexProvider;
+import org.apache.jackrabbit.oak.spi.commit.Observer;
+import org.apache.jackrabbit.oak.spi.query.QueryIndexProvider;
 import org.apache.sling.jcr.api.SlingRepository;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
@@ -66,15 +70,19 @@ public final class OakMockSlingRepository implements SlingRepository {
             bundleContext.registerService(Executor.class, executor, null);
         }
         
-        Oak oak = new Oak()
+        Oak oak = new Oak().withAsyncIndexing("async", 5)
                 .with(executor)
                 .with(scheduledExecutor);
-        
+
+        LuceneIndexProvider indexProvider = new LuceneIndexProvider();
         Jcr jcr = new Jcr(oak)
                 .with(new ExtraSlingContent())
                 .with(executor)
+                .with((QueryIndexProvider) indexProvider)
+                .with((Observer) indexProvider)
+                .with(new LuceneIndexEditorProvider())
                 .with(scheduledExecutor);
-        
+
         this.repository = jcr.createRepository();
     }
 

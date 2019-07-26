@@ -93,6 +93,11 @@
             <artifactId>oak-jcr</artifactId>
             <version>${oak.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>oak-lucene</artifactId>
+            <version>${oak.version}</version>
+        </dependency>
         
         <!-- Ensure we depend on more recent jackrabbit artifacts required by Oak -->
         <dependency>
